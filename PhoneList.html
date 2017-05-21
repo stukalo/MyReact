@@ -1,0 +1,132 @@
+<html>
+  <header>
+    <title>MyReact</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <style>
+      .contacts{
+        width: 300px;
+        margin: 0 auto;
+      }
+      .search-field{
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+      }
+      .contacts-list{
+        padding: 0;
+        width: 100%;
+      }
+      .contact{
+        display: flex;
+        align-items: center;
+        font-family: sans-srif;
+        width: 100%;
+        padding: 5px;
+        border-bottom: 1px dotted grey;
+      }
+      .contact-image{
+        border-radius: 50%;
+        margin: 5px;
+      }
+      .contact-name{
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .contact-number{
+        font-size: 18px;
+        color: grey;
+      }
+    </style>
+  </header>
+  <body>
+    <div id="content"></div>
+    <script type="text/babel">
+      var _contacts = [
+        {
+          id: 1,
+          name: "Dart Vader",
+          phoneNumber: "+2235245",
+          image: "http://68.media.tumblr.com/tumblr_m8m79qxtr41rvwq31o1_250.gif"
+        },
+        {
+          id: 2,
+          name: "Princess Leia",
+          phoneNumber: "+1165487",
+          image: "http://images6.fanpop.com/image/photos/33100000/CARRIE-FISHER-anakin-vader-and-princess-leia-33186069-190-149.gif"
+        },
+        {
+          id: 3,
+          name: "Luke Skywalker",
+          phoneNumber: "+15678641",
+          image: "http://i.imgur.com/cRaR2VI.gif"
+        },
+        {
+          id: 4,
+          name: "Chewbacca",
+          phoneNumber: "+2504878561",
+          image: "https://media.giphy.com/media/RUUdVZqwpfTRS/giphy.gif"
+        }
+      ];
+
+      class Contact extends React.Component{
+        render(){
+          return (
+            <li className="contact">
+              <img className="contact-image" src={this.props.image} width="60px" height="60px"/>
+              <div className="contact-info">
+                <div className="contact-name">{this.props.name}</div>
+                <div className="contact-number">{this.props.phoneNumber}</div>
+              </div>
+            </li>
+          );
+        }
+      }
+
+      class ContactsList extends React.Component{
+        constructor(props) {
+          super(props);
+          this.state = {
+            displayedContacts: _contacts
+          };
+          this.handleSearch = this.handleSearch.bind(this)
+        }
+        handleSearch(event){
+          var searchQuery = event.target.value.toLowerCase();
+          var displayedContacts = _contacts.filter(function(item){
+            var searchValue = item.name.toLowerCase();
+            return (searchValue.indexOf(searchQuery) !== -1);
+          });
+          this.setState({
+            displayedContacts: displayedContacts
+          });
+        }
+        render(){
+          return(
+            <div className="contacts">
+             <input type="text" className="search-field"
+                 onChange={this.handleSearch}/>
+              <ul className="contacts-list">
+                {
+                  this.state.displayedContacts.map(function(item){
+                    return <Contact key={item.id}
+                      name={item.name}
+                      phoneNumber={item.phoneNumber}
+                      image={item.image}
+                      />;
+                  })
+                }
+              </ul>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <ContactsList/>,
+        document.getElementById("content")
+      );
+    </script>
+  </body>
+</html>
