@@ -1,0 +1,65 @@
+<html>
+  <header>
+    <title>LifeCycle</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+  </header>
+  <body>
+    <div id="container">
+      <div id="mount-point"></div>
+      <ul id="screen"></ul>
+    </div>
+
+    <script type="text/babel">
+      function printOnPage(method){
+        var ul = document.getElementById("screen");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(method));
+        li.className = methodName;
+        ul.appendChild(li);
+        ul.scrollTop = ul.scrollHeight;
+      }
+
+      class App extends React.Component{
+        constructor(props){
+          super(props);
+          this.state = {
+            id: 0,
+            mounted: false
+          };
+          this.handleUpdateProps = this.handleUpdateProps.bind(this);
+          this.handleMountProps = this.handleMountProps.bind(this);
+        }
+        handleUpdateProps(){
+          this.setState({id: this.state.id + 1});
+        }
+        handleMountProps(){
+          this.setState({mounted: !this.state.mounted});
+        }
+        render(){
+          return (
+            <div className='App'>
+            </div>
+          );
+        }
+      }
+      class Component extends React.Component{
+        constructor(props){
+          super(props);
+          printOnPage("getInitialState (constructor)");
+          this.state = {
+            id: 0
+          };
+        }
+        // static defaulProps = {
+        //   printOnPage("getDefaultProps");
+        //   return {
+        //     id: 0
+        //   };
+        // }
+      }
+      ReactDOM.render(<App/>, document.getElementById("screen"));
+    </script>
+  </body>
+</html>
