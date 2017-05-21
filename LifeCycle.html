@@ -123,9 +123,9 @@
           return (
               <div className='App'>
                 {
-                    this.state.mounted
-                        ? <Component id={this.state.id} />
-                        : false
+                  this.state.mounted
+                      ? <Component id={this.state.id} />
+                      : false
                 }
                 <button onClick={this.handleUpdateProps}>
                     Update props
@@ -159,6 +159,9 @@
         }
         componentWillUpdate(){
           Util.printOnPage("componentWillUpdate");
+        }
+        componentWillUnmount() {
+          Util.printOnPage('componentWillUnmount');
         }
         shouldComponentUpdate(){
           Util.printOnPage("shouldComponentUpdate");
