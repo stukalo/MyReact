@@ -4,6 +4,84 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <style>
+
+      body {
+          font-family: sans-serif;
+      }
+
+      .container {
+          display: flex;
+      }
+
+      .App {
+          margin: 20px;
+          width: 200px;
+      }
+
+      #screen {
+          max-height: 500px;
+          overflow: auto;
+          list-style-type: none;
+          width: 250px;
+      }
+
+      #screen li {
+          display: block;
+          padding: 5px;
+      }
+
+      #screen li.render {
+          background-color: Aquamarine;
+          color: black;
+      }
+
+      #screen li.getInitialState {
+          background-color: DeepSkyBlue;
+          color: white;
+      }
+
+      #screen li.componentWillMount {
+          background-color: orange;
+          color: white;
+      }
+
+      #screen li.componentDidMount {
+          background-color: purple;
+          color: white;
+      }
+
+      #screen li.getDefaultProps {
+          background-color: grey;
+          color: white;
+      }
+
+      #screen li.componentWillReceiveProps {
+          background-color: HotPink;
+          color: white;
+      }
+
+      #screen li.componentWillUpdate {
+          background-color: CornflowerBlue;
+          color: white;
+      }
+
+      #screen li.componentDidUpdate {
+          background-color: IndianRed;
+          color: white;
+      }
+
+      #screen li.shouldComponentUpdate {
+          background-color: SandyBrown;
+          color: white;
+      }
+
+      #screen li.componentWillUnmount {
+          background-color: Indigo  ;
+          color: white;
+      }
+
+    </style>
   </header>
   <body>
     <div id="container">
@@ -12,13 +90,15 @@
     </div>
 
     <script type="text/babel">
-      function printOnPage(method){
-        var ul = document.getElementById("screen");
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(method));
-        li.className = methodName;
-        ul.appendChild(li);
-        ul.scrollTop = ul.scrollHeight;
+      class Util{
+        static printOnPage(method){
+          var ul = document.getElementById("screen");
+          var li = document.createElement("li");
+          li.appendChild(document.createTextNode(method));
+          li.className = method;
+          ul.appendChild(li);
+          ul.scrollTop = ul.scrollHeight;
+        }
       }
 
       class App extends React.Component{
@@ -29,36 +109,81 @@
             mounted: false
           };
           this.handleUpdateProps = this.handleUpdateProps.bind(this);
-          this.handleMountProps = this.handleMountProps.bind(this);
+          this.handleMountOrUnmount = this.handleMountOrUnmount.bind(this);
         }
         handleUpdateProps(){
+          console.log("handleUpdateProps");
           this.setState({id: this.state.id + 1});
         }
-        handleMountProps(){
+        handleMountOrUnmount(){
+          console.log("handleMountOrUnmount");
           this.setState({mounted: !this.state.mounted});
         }
-        render(){
+        render() {
           return (
-            <div className='App'>
-            </div>
+              <div className='App'>
+                {
+                    this.state.mounted
+                        ? <Component id={this.state.id} />
+                        : false
+                }
+                <button onClick={this.handleUpdateProps}>
+                    Update props
+                </button>
+                <button onClick={this.handleMountOrUnmount}>
+                    {this.state.mounted ? 'Unmount' : 'Mount'}
+                </button>
+              </div>
           );
         }
       }
+
       class Component extends React.Component{
         constructor(props){
+          Util.printOnPage("getDefaultProps");
           super(props);
-          printOnPage("getInitialState (constructor)");
+          Util.printOnPage("getInitialState (constructor)");
           this.state = {
             id: 0
           };
+          this.handleUpdateState = this.handleUpdateState.bind(this);
         }
-        // static defaulProps = {
-        //   printOnPage("getDefaultProps");
-        //   return {
-        //     id: 0
-        //   };
-        // }
+        componentWillMount(){
+          Util.printOnPage("componentWillMount");
+        }
+        componentDidMount(){
+          Util.printOnPage("componentDidMount");
+        }
+        componentWillReceiveProps(){
+          Util.printOnPage("componentWillReceiveProps");
+        }
+        componentWillUpdate(){
+          Util.printOnPage("componentWillUpdate");
+        }
+        shouldComponentUpdate(){
+          Util.printOnPage("shouldComponentUpdate");
+          return true;
+        }
+        handleUpdateState(){
+          this.setState({id: this.state.id + 1});
+        }
+        render() {
+          Util.printOnPage('render');
+          return (
+              <div>
+                  <div> Component state : {this.state.id} </div>
+                  <div> Component props : {this.props.id} </div>
+                  <button onClick={this.handleUpdateState}>
+                      Update state
+                  </button>
+              </div>
+          );
+        }
       }
+      Component.defaulProps = {
+        id: 0
+      }
+
       ReactDOM.render(<App/>, document.getElementById("screen"));
     </script>
   </body>
